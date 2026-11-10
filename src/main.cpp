@@ -267,3 +267,4 @@ int main(int argc, char **argv)
         settings.setRule(host, chosen.id);
     return launchOrWarn(chosen, url) ? 0 : 1;
 }
+
