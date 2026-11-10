@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Application
+Name=Veer
+GenericName=Web Browser Swapper
+Comment=A link swapper that opens links in a browser that may not be your default browser
+Exec=@CMAKE_INSTALL_FULL_BINDIR@/veer %U
+Icon=veer
+Terminal=false
+StartupNotify=false
+Categories=Network;WebBrowser;
+MimeType=text/html;application/xhtml+xml;application/x-mswinurl;x-scheme-handler/http;x-scheme-handler/https;
+Actions=OpenSelection;Setup;
+
+[Desktop Action OpenSelection]
+Name=Open the highlighted link
+Icon=veer
+Exec=@CMAKE_INSTALL_FULL_BINDIR@/veer --selection
+
+[Desktop Action Setup]
+Name=Settings
+Icon=preferences-system
+Exec=@CMAKE_INSTALL_FULL_BINDIR@/veer --setup

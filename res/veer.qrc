@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="icons/veer-256.png">icons/256/veer.png</file>
+        <file alias="icons/veer-64.png">icons/64/veer.png</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,16 @@
+# Build output, rebuilt by cmake (this is where Makefile or build.ninja ends up)
+build/
+build-*/
+cmake-build-*/
+
+# Packages
+*.deb
+*.zip
+
+# Editors
+.vscode/
+.idea/
+*.user
+*.swp
+*.asc
+SHA256SUMS
