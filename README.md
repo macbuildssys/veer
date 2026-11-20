@@ -17,10 +17,18 @@ Veer is a small Debian link swapper written in C++ with Qt6. When you click on a
 ## Install the Debian package
 
 Download `veer_0.0.1_amd64.deb`, open a terminal in the folder that holds it, and run:
+```
+sudo apt install ./veer_0.0.1_amd64.deb 
 
-sudo apt install ./veer_0.0.1_amd64.deb
+or 
 
+sudo apt install veer_0.0.1_amd64.deb
+```
+
+Optional step: 
+```
 veer --set-default
+```
 
 To check that it worked:
 
