@@ -1,0 +1,82 @@
+# Created on Wed Nov 25 2026
+# @author: macbuildssys
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    # Build on the oldest system we support (Ubuntu 24.04, which Linux Mint 22 is based on)
+    # so the package runs on everything newer
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential cmake dpkg-dev desktop-file-utils \
+            qt6-base-dev libqt6svg6 libgl-dev
+
+      - name: Configure
+        run: cmake -S . -B build
+
+      - name: Build
+        run: cmake --build build -j"$(nproc)"
+
+      - name: Check the launcher entry
+        run: desktop-file-validate build/veer.desktop
+
+      - name: Build the .deb
+        run: |
+          cd build
+          cpack -G DEB
+
+      - name: Upload the .deb
+        uses: actions/upload-artifact@v4
+        with:
+          name: veer-deb
+          path: build/veer_amd64.deb
+          if-no-files-found: error
+
+  install-test:
+    needs: build
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        # Debian 13 (also LMDE 7), Ubuntu and Kubuntu 24.04 and 26.04, Linux Mint 22
+        image: ["debian:13", "ubuntu:24.04", "ubuntu:26.04", "linuxmintd/mint22.3-amd64"]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: veer-deb
+          path: pkg
+
+      - name: Install on a clean system and run it
+        run: |
+          docker run --rm --user root -v "$PWD/pkg:/pkg:ro" ${{ matrix.image }} bash -euxc '
+            apt-get update
+            apt-get install -y --no-install-recommends /pkg/veer_amd64.deb
+
+            # The launcher entry must point at a program that exists
+            exe="$(grep -m1 "^Exec=" /usr/share/applications/veer.desktop | cut -d= -f2 | cut -d" " -f1)"
+            test -x "$exe"
+
+            veer --version
+            veer --list
+            veer --status || true
+
+            # Draw the setup window without a screen to prove the Qt libraries load
+            QT_QPA_PLATFORM=offscreen veer --setup --screenshot /tmp/setup.png
+            test -s /tmp/setup.png
+          '
+          

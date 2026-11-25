@@ -199,7 +199,7 @@ QList<Browser> BrowserScanner::scan()
             if (seen.contains(fileName))
                 continue;
             seen.insert(fileName);
-            if (fileName == kSelfId || fileName == QLatin1String("veer.desktop") || fileName == QLatin1String("forkway.desktop"))
+            if (fileName == kSelfId)
                 continue;
 
             Browser browser;

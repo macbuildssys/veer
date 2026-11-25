@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
-project(veer VERSION 0.0.1 LANGUAGES CXX)
+project(veer VERSION 0.0.2 LANGUAGES CXX)
+
+# Default to /usr so the launcher entry points at the same place the package installs to
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX /usr CACHE PATH "Install prefix" FORCE)
+endif()
 
 include(GNUInstallDirs)
 
@@ -39,8 +44,9 @@ endforeach()
 configure_file(data/veer.desktop.in ${CMAKE_BINARY_DIR}/veer.desktop @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/veer.desktop DESTINATION share/applications)
 
-option(LINKPICK_BUILD_TESTS "Build the unit tests" ON)
-if(LINKPICK_BUILD_TESTS)
+# The tests are kept out of the repository, so only build them when the folder is there
+option(VEER_BUILD_TESTS "Build the unit tests" ON)
+if(VEER_BUILD_TESTS AND EXISTS "${CMAKE_SOURCE_DIR}/tests")
     enable_testing()
     find_package(Qt6 REQUIRED COMPONENTS Test)
     add_executable(test_scanner tests/test_scanner.cpp)
@@ -61,16 +67,19 @@ if(LINKPICK_BUILD_TESTS)
     set_tests_properties(swapper PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 endif()
 
-# Packaging: configure with -DCMAKE_INSTALL_PREFIX=/usr, build, then run cpack
+# Packaging: configure, build, then run cpack
+set(CPACK_PACKAGING_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 set(CPACK_GENERATOR "DEB")
 set(CPACK_PACKAGE_NAME "veer")
 set(CPACK_PACKAGE_VENDOR "macbuildssys")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
-set(CPACK_PACKAGE_CONTACT "Dev <you@example.com>")
+set(CPACK_PACKAGE_CONTACT "Dev <222581142+macbuildssys@users.noreply.github.com>")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Link swapper that opens each link in the browser you choose")
 set(CPACK_DEBIAN_PACKAGE_SECTION "web")
-set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt6svg6")
-set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "wl-clipboard, xclip")
-set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS OFF)
+# Qt library names differ between Debian and Ubuntu, so list both spellings
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= 2.34), libgcc-s1, libstdc++6, libqt6core6t64 (>= 6.4.0), libqt6gui6t64 (>= 6.4.0) | libqt6gui6 (>= 6.4.0), libqt6widgets6t64 (>= 6.4.0) | libqt6widgets6 (>= 6.4.0), libqt6svg6, xdg-utils")
+set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "wl-clipboard, xclip, qt6-wayland")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/macbuildssys/veer")
+set(CPACK_DEBIAN_FILE_NAME "veer_amd64.deb")
 include(CPack)

@@ -16,16 +16,14 @@ Veer is a small Debian link swapper written in C++ with Qt6. When you click on a
 
 ## Install the Debian package
 
-Download `veer_0.0.1_amd64.deb`, open a terminal in the folder that holds it, and run:
+Download `veer_amd64.deb` from the [latest release](https://github.com/macbuildssys/veer/releases/latest), open a terminal in the folder that holds it, and run:
+
 ```
-sudo apt install ./veer_0.0.1_amd64.deb 
-
-or 
-
-sudo apt install veer_0.0.1_amd64.deb
+sudo apt install ./veer_amd64.deb
 ```
 
-Optional step: 
+Optional step:
+
 ```
 veer --set-default
 ```
@@ -36,7 +34,7 @@ To check that it worked:
 veer --status
 ```
 
-The install puts the program in `/usr/local/bin`, the launcher entry in `/usr/local/share/applications` and the icon in `/usr/local/share/icons`. If the icon does not show up in your taskbar or menu right away, log out and back in. If `veer --set-default` fails, choose Veer under System Settings, Default Applications, Web browser.
+The install puts the program in `/usr/bin`, the launcher entry in `/usr/share/applications` and the icons in `/usr/share/icons`. If the icon does not show up in your taskbar or menu right away, log out and back in. If `veer --set-default` fails, choose Veer under System Settings, Default Applications, Web browser.
 
 `wl-clipboard` (Wayland) and `xclip` (X11) are only needed for the highlighted link feature below.
 

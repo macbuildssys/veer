@@ -14,3 +14,6 @@ cmake-build-*/
 *.swp
 *.asc
 SHA256SUMS
+
+# Unit tests are kept local
+/tests/
